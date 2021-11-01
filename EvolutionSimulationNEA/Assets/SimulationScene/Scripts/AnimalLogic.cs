@@ -38,9 +38,6 @@ public class AnimalLogic : MonoBehaviour
         energy = energyValue;
 
 
-        int worldTemperature = GameObject.Find("SimulationManager").GetComponent<WorldLogic>().GetTemperature();
-        float cost = (speed + speed*size) + visionRange + Mathf.Abs(worldTemperature - idealTemperature);
-        Debug.Log((cost * 0.5f).ToString());
     }
 
     public void Reproduce(float standardDeviation)
@@ -106,7 +103,8 @@ public class AnimalLogic : MonoBehaviour
     private void DeductEnergy()
     {
         int worldTemperature = GameObject.Find("SimulationManager").GetComponent<WorldLogic>().GetTemperature();
-        float cost = (speed + speed * size) + visionRange + Mathf.Abs(worldTemperature - idealTemperature);
+        float cost = (speed + speed * size) + visionRange + (1f/12f)*Mathf.Pow(Mathf.Abs(worldTemperature - idealTemperature), 2);
+        Debug.Log((cost).ToString());
         energy -= cost * Time.deltaTime * 0.3f;
         //energy -= Time.deltaTime * 15;
     }

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class WorldLogic : MonoBehaviour
 {
     public GameObject animalPrefab;
-    private int numberOfAnimals = 100;
+    private int numberOfAnimals = 50;
 
     private List<GameObject> animals = new List<GameObject>();
 
@@ -28,6 +28,11 @@ public class WorldLogic : MonoBehaviour
 
     // Start is called before the first frame update
     void Start()
+    {
+        SpawnAnimals();
+    }
+
+    private void SpawnAnimals()
     {
         for (int i = 0; i < numberOfAnimals; i++)
         {
@@ -92,5 +97,34 @@ public class WorldLogic : MonoBehaviour
     public void RemoveAnimal(GameObject animal)
     {
         animals.Remove(animal);
+    }
+
+    public void Restart()
+    {
+        int population = animals.Count;
+        for (int i = population-1; i >= 0; i--)
+        {
+            Destroy(animals[i]);
+            animals.RemoveAt(i);
+        }
+
+        SpawnAnimals();
+        UserInterface UI_script = gameObject.GetComponent<UserInterface>();
+        UI_script.Pause();
+        GenerationLogic generationScript = gameObject.GetComponent<GenerationLogic>();
+        generationScript.Reset();
+    }
+
+    public void SetNumberOfAnimalsToSpawn(int number)
+    {
+        numberOfAnimals = number;
+    }
+    public void SetWorldTemperature(int number)
+    {
+        environmentTemperature = number;
+    }
+    public void SetReproductionPercentage(float number)
+    {
+        reproductionPercentage = number;
     }
 }
