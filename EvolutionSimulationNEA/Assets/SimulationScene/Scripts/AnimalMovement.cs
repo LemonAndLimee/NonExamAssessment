@@ -22,6 +22,7 @@ public class AnimalMovement : MonoBehaviour
     {
         direction = SetRandomDirection(0, 0);
         timeUntilNextDirection = Random.Range(0f, 5f);
+
     }
 
     // Update is called once per frame
@@ -136,6 +137,7 @@ public class AnimalMovement : MonoBehaviour
 
         isTargeting = true;
         direction = directionVector;
+
     }
 
 

@@ -127,4 +127,23 @@ public class WorldLogic : MonoBehaviour
     {
         reproductionPercentage = number;
     }
+
+    public void SetStandardDeviation(float number)
+    {
+        standardDeviation = number;
+    }
+
+
+    public void SetStartingSpeed(int number)
+    {
+        startingSpeed = number;
+    }
+    public void SetStartingVision(float number)
+    {
+        startingVisionRange = number;
+    }
+    public void SetStartingSize(float number)
+    {
+        startingSize = number;
+    }
 }

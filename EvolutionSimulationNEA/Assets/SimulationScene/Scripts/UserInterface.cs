@@ -25,6 +25,11 @@ public class UserInterface : MonoBehaviour
     public Slider generationDurationSlider;
     public Slider foodPerGenerationSlider;
     public Slider reproductionChanceSlider;
+    public Slider standardDeviationSlider;
+
+    public Slider speedSlider;
+    public Slider visionSlider;
+    public Slider sizeSlider;
 
     // Start is called before the first frame update
     void Start()
@@ -37,30 +42,42 @@ public class UserInterface : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        UpdateTextValue(numberOfAnimalsToSpawnSlider);
+        UpdateTextValue(numberOfAnimalsToSpawnSlider, 1f);
         worldScript.SetNumberOfAnimalsToSpawn((int)numberOfAnimalsToSpawnSlider.value);
 
-        UpdateTextValue(environmentTempSlider);
+        UpdateTextValue(environmentTempSlider, 1f);
         worldScript.SetWorldTemperature((int)environmentTempSlider.value);
 
-        UpdateTextValue(numberOfGenerationsSlider);
+        UpdateTextValue(numberOfGenerationsSlider, 1f);
         generationScript.SetNumberOfGenerations((int)numberOfGenerationsSlider.value);
 
-        UpdateTextValue(generationDurationSlider);
+        UpdateTextValue(generationDurationSlider, 1f);
         generationScript.SetGenerationDuration((int)generationDurationSlider.value);
 
-        UpdateTextValue(foodPerGenerationSlider);
+        UpdateTextValue(foodPerGenerationSlider, 1f);
         generationScript.SetFoodPerGeneration((int)foodPerGenerationSlider.value);
 
-        UpdateTextValue(reproductionChanceSlider);
-        worldScript.SetReproductionPercentage(reproductionChanceSlider.value);
+        UpdateTextValue(reproductionChanceSlider, 0.01f);
+        worldScript.SetReproductionPercentage(reproductionChanceSlider.value*0.01f);
+
+        UpdateTextValue(standardDeviationSlider, 1f);
+        worldScript.SetStandardDeviation(standardDeviationSlider.value);
+
+        UpdateTextValue(speedSlider, 1f);
+        worldScript.SetStartingSpeed((int)speedSlider.value);
+
+        UpdateTextValue(visionSlider, 0.1f);
+        worldScript.SetStartingVision(visionSlider.value * 0.1f);
+
+        UpdateTextValue(sizeSlider, 0.1f);
+        worldScript.SetStartingSize(sizeSlider.value * 0.1f);
 
     }
 
-    private void UpdateTextValue(Slider slider)
+    private void UpdateTextValue(Slider slider, float multiplier)
     {
         Text valueText = slider.transform.Find("Value").GetComponent<Text>();
-        valueText.text = slider.value.ToString();
+        valueText.text = (slider.value*multiplier).ToString();
     }
 
     private void EditValue(Slider slider, float amount)
@@ -115,11 +132,48 @@ public class UserInterface : MonoBehaviour
 
     public void IncrementReproductionPercentage()
     {
-        EditValue(reproductionChanceSlider, 0.1f);
+        EditValue(reproductionChanceSlider, 1f);
     }
     public void DecrementReproductionPercentage()
     {
-        EditValue(reproductionChanceSlider, -0.1f);
+        EditValue(reproductionChanceSlider, -1f);
+    }
+
+    public void IncrementStandardDeviation()
+    {
+        EditValue(standardDeviationSlider, 1f);
+    }
+    public void DecrementStandardDeviation()
+    {
+        EditValue(standardDeviationSlider, -1f);
+    }
+
+
+    public void IncrementStartingSpeed()
+    {
+        EditValue(speedSlider, 1f);
+    }
+    public void DecrementStartingSpeed()
+    {
+        EditValue(speedSlider, -1f);
+    }
+
+    public void IncrementStartingVision()
+    {
+        EditValue(visionSlider, 1f);
+    }
+    public void DecrementStartingVision()
+    {
+        EditValue(visionSlider, -1f);
+    }
+
+    public void IncrementStartingSize()
+    {
+        EditValue(sizeSlider, 1f);
+    }
+    public void DecrementStartingSize()
+    {
+        EditValue(sizeSlider, -1f);
     }
 
     public void PlayPauseButton()
