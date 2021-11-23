@@ -30,6 +30,7 @@ public class UserInterface : MonoBehaviour
     public Slider speedSlider;
     public Slider visionSlider;
     public Slider sizeSlider;
+    public Slider tempSlider;
 
     // Start is called before the first frame update
     void Start()
@@ -71,6 +72,9 @@ public class UserInterface : MonoBehaviour
 
         UpdateTextValue(sizeSlider, 0.1f);
         worldScript.SetStartingSize(sizeSlider.value * 0.1f);
+
+        UpdateTextValue(tempSlider, 1f);
+        worldScript.SetStartingIdealTemp((int)tempSlider.value);
 
     }
 
@@ -174,6 +178,15 @@ public class UserInterface : MonoBehaviour
     public void DecrementStartingSize()
     {
         EditValue(sizeSlider, -1f);
+    }
+
+    public void IncrementStartingIdeaTemp()
+    {
+        EditValue(tempSlider, 1f);
+    }
+    public void DecrementStartingIdealTemp()
+    {
+        EditValue(tempSlider, -1f);
     }
 
     public void PlayPauseButton()

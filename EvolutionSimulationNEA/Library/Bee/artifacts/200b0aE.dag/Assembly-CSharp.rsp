@@ -333,6 +333,8 @@
 "Assets/SimulationScene/Scripts/AnimalLogic.cs"
 "Assets/SimulationScene/Scripts/AnimalMovement.cs"
 "Assets/SimulationScene/Scripts/GenerationLogic.cs"
+"Assets/SimulationScene/Scripts/GraphLogic.cs"
+"Assets/SimulationScene/Scripts/LineGraphManager.cs"
 "Assets/SimulationScene/Scripts/UserInterface.cs"
 "Assets/SimulationScene/Scripts/VisionRangeDetection.cs"
 "Assets/SimulationScene/Scripts/WorldLogic.cs"

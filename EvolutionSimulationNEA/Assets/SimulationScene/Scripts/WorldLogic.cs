@@ -15,7 +15,7 @@ public class WorldLogic : MonoBehaviour
     private int startingSpeed = 30;
     private float startingVisionRange = 3f;
     private float startingSize = 1f;
-    private int startingIdealTemp = 20;
+    private int startingIdealTemp = 10;
 
     private float reproductionPercentage = 0.5f;
     private float standardDeviation = 5f;
@@ -25,6 +25,11 @@ public class WorldLogic : MonoBehaviour
     public Text sizeText;
     public Text vrText;
     public Text tempText;
+
+    float meanSpeed = 30f;
+    float meanSize = 1f;
+    float meanVR = 3f;
+    float meanTemp = 10f;
 
     // Start is called before the first frame update
     void Start()
@@ -49,10 +54,10 @@ public class WorldLogic : MonoBehaviour
     {
         populationText.text = "Population: " + animals.Count.ToString();
 
-        float meanSpeed = 0f;
-        float meanSize = 0f;
-        float meanVR = 0f;
-        float meanTemp = 0f;
+        meanSpeed = 0f;
+        meanSize = 0f;
+        meanVR = 0f;
+        meanTemp = 0f;
         for (int i = 0; i < animals.Count; i++)
         {
             meanSpeed += animals[i].GetComponent<AnimalLogic>().GetSpeed();
@@ -84,6 +89,23 @@ public class WorldLogic : MonoBehaviour
                 animalScript.Reproduce(standardDeviation);
             }
         }
+    }
+
+    public float GetMeanSpeed()
+    {
+        if (animals.Count > 0)
+        {
+            return meanSpeed;
+        }
+        else
+        {
+            return 0f;
+        }
+    }
+
+    public int GetStartingSpeed()
+    {
+        return startingSpeed;
     }
 
     public int GetTemperature()
@@ -145,5 +167,9 @@ public class WorldLogic : MonoBehaviour
     public void SetStartingSize(float number)
     {
         startingSize = number;
+    }
+    public void SetStartingIdealTemp(int number)
+    {
+        startingIdealTemp = number;
     }
 }

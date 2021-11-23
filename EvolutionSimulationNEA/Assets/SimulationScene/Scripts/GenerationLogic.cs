@@ -21,6 +21,8 @@ public class GenerationLogic : MonoBehaviour
 
     public GameObject foodPrefab;
 
+    public GameObject graph;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -42,6 +44,9 @@ public class GenerationLogic : MonoBehaviour
                 timer = 0f;
                 generationCounter++;
                 generationCounterText.text = generationCounter.ToString();
+
+                GraphLogic graphScript = graph.GetComponentInChildren<GraphLogic>();
+                graphScript.PlotMeanSpeed();
             }
         }
         else
