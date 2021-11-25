@@ -7,100 +7,67 @@ public class GraphLogic : MonoBehaviour
 {
 
     List<float> numbers = new List<float>();
+
     LineRenderer lr;
-
-    WorldLogic worldScript;
-
-    float graphWidth = 10f;
-    float graphHeight = 3f;
 
     float startingValue = 0f;
     float highestDifference = 0f;
+
+    LineGraphManager graphManagerScript;
 
 
     // Start is called before the first frame update
     void Start()
     {
         lr = gameObject.GetComponent<LineRenderer>();
-        worldScript = GameObject.Find("SimulationManager").GetComponent<WorldLogic>();
-        
-        
+        graphManagerScript = GetComponentInParent<LineGraphManager>();
     }
 
     public void SetStartingValue(float value)
     {
         startingValue = value;
+        numbers.Add(value);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (numbers.Count > 0)
+        if (numbers.Count > 1)
         {
-            float maxValue = startingValue;
-            float minValue = startingValue;
-
-            highestDifference = startingValue;
-
-            for (int i = 0; i < numbers.Count; i++)
-            {
-                if (numbers[i] > maxValue)
-                {
-                    maxValue = numbers[i];
-                }
-                if (numbers[i] < minValue)
-                {
-                    minValue = numbers[i];
-                }
-            }
-
-            if (startingValue - minValue > maxValue - startingValue)
-            {
-                highestDifference = startingValue - minValue;
-            }
-            else
-            {
-                highestDifference = maxValue - startingValue;
-            }
-
             lr.positionCount = numbers.Count;
-            float interval = graphWidth;
-            if (numbers.Count > 1)
-            {
-                interval = graphWidth / (numbers.Count - 1);
-            }
+            float interval = graphManagerScript.GetGraphWidth() / (numbers.Count - 1f);
             for (int i = 0; i < numbers.Count; i++)
             {
                 float x = i * interval;
                 float y = 0f;
-                if (numbers[i] > startingValue)
+                if (highestDifference != 0)
                 {
-                    y = (numbers[i]-startingValue) / highestDifference * graphHeight;
+                    y = graphManagerScript.GetGraphHeight() * ((numbers[i] - startingValue) / highestDifference);
                 }
-                else if (numbers[i] < startingValue)
-                {
-                    y = -((startingValue-numbers[i]) / highestDifference * graphHeight);
-                }
-                lr.SetPosition(i, new Vector3(x, y));
-                //Debug.Log(numbers[i]);
+                lr.SetPosition(i, new Vector3(x, y, 0f));
             }
         }
-        else
+    }
+
+    public void PlotGraphPoint(float value)
+    {
+        numbers.Add(value);
+        CheckDifference(value);
+        Debug.Log(value);
+    }
+
+    void CheckDifference(float value)
+    {
+        float difference = Mathf.Abs(startingValue - value);
+        if (difference > highestDifference)
         {
-            lr.positionCount = 1;
-            lr.SetPosition(0, new Vector3(0, 0f));
+            highestDifference = difference;
         }
     }
 
-    public void PlotMeanSpeed()
+    public void Reset()
     {
-        float meanSpeed = worldScript.GetMeanSpeed();
-        PlotGraphPoint(meanSpeed);
-    }
-
-    void PlotGraphPoint(float value)
-    {
-        numbers.Add(value);
-        Debug.Log(value);
+        numbers.Clear();
+        lr.positionCount = 0;
     }
 }

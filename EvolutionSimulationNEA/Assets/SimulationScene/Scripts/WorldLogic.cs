@@ -31,6 +31,8 @@ public class WorldLogic : MonoBehaviour
     float meanVR = 3f;
     float meanTemp = 10f;
 
+    public LineGraphManager graphManagerScript;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -102,10 +104,55 @@ public class WorldLogic : MonoBehaviour
             return 0f;
         }
     }
+    public float GetMeanSize()
+    {
+        if (animals.Count > 0)
+        {
+            return meanSize;
+        }
+        else
+        {
+            return 0f;
+        }
+    }
+    public float GetMeanVisionRange()
+    {
+        if (animals.Count > 0)
+        {
+            return meanVR;
+        }
+        else
+        {
+            return 0f;
+        }
+    }
+    public float GetMeanIdealTemp()
+    {
+        if (animals.Count > 0)
+        {
+            return meanTemp;
+        }
+        else
+        {
+            return 0f;
+        }
+    }
 
-    public int GetStartingSpeed()
+    public float GetStartingSpeed()
     {
         return startingSpeed;
+    }
+    public float GetStartingSize()
+    {
+        return startingSize;
+    }
+    public float GetStartingVisionRange()
+    {
+        return startingVisionRange;
+    }
+    public float GetStartingIdealTemp()
+    {
+        return startingIdealTemp;
     }
 
     public int GetTemperature()
@@ -135,6 +182,8 @@ public class WorldLogic : MonoBehaviour
         UI_script.Pause();
         GenerationLogic generationScript = gameObject.GetComponent<GenerationLogic>();
         generationScript.Reset();
+
+        graphManagerScript.Reset();
     }
 
     public void SetNumberOfAnimalsToSpawn(int number)
