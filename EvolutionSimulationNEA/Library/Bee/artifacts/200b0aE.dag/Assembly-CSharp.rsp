@@ -332,6 +332,7 @@
 -r:"Library/Bee/artifacts/200b0aE.dag/UnityEngine.UI.ref.dll"
 "Assets/SimulationScene/Scripts/AnimalLogic.cs"
 "Assets/SimulationScene/Scripts/AnimalMovement.cs"
+"Assets/SimulationScene/Scripts/AnimalSelector.cs"
 "Assets/SimulationScene/Scripts/GenerationLogic.cs"
 "Assets/SimulationScene/Scripts/GraphLogic.cs"
 "Assets/SimulationScene/Scripts/LineGraphManager.cs"

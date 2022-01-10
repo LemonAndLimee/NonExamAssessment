@@ -49,6 +49,8 @@ public class WorldLogic : MonoBehaviour
             AnimalLogic animalScript = animal.GetComponent<AnimalLogic>();
             animalScript.SetValues(startingSpeed, startingVisionRange, startingSize, startingIdealTemp, 100f);
             animalScript.ToggleEnergyDeduction(false);
+
+            animalScript.isFirstGeneration = true;
         }
     }
 

@@ -2,6 +2,45 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public struct Animal
+{
+    GameObject animalObject;
+    int speed;
+    float visionRange;
+    float size;
+    int idealTemp;
+
+    public Animal(GameObject obj, int animalSpeed, float vision, float animalSize, int temp)
+    {
+        animalObject = obj;
+        speed = animalSpeed;
+        visionRange = vision;
+        size = animalSize;
+        idealTemp = temp;
+    } 
+
+    public GameObject GetObject()
+    {
+        return animalObject;
+    }
+    public int GetSpeed()
+    {
+        return speed;
+    }
+    public float GetVisionRange()
+    {
+        return visionRange;
+    }
+    public float GetSize()
+    {
+        return size;
+    }
+    public int GetIdealTemp()
+    {
+        return idealTemp;
+    }
+}
+
 public class AnimalLogic : MonoBehaviour
 {
     const float defaultSize = 0.172f;
@@ -16,6 +55,10 @@ public class AnimalLogic : MonoBehaviour
     private bool deductEnergy = true;
     private float timer = 0f;
     private int generationTime;
+
+    public List<Animal> parents = new List<Animal>();
+
+    public bool isFirstGeneration;
 
     private void Start()
     {
@@ -52,7 +95,24 @@ public class AnimalLogic : MonoBehaviour
         energy = energy / 2f;
 
         GameObject childObject = Instantiate(gameObject);
-        childObject.GetComponent<AnimalLogic>().SetValues(childSpeed, childVisionRange, childSize, childIdealTemp, energy);
+        AnimalLogic animalScript = childObject.GetComponent<AnimalLogic>();
+        animalScript.SetValues(childSpeed, childVisionRange, childSize, childIdealTemp, energy);
+        animalScript.isFirstGeneration = false;
+
+        Animal animal = new Animal(gameObject, speed, visionRange, size, idealTemperature);
+        animalScript.parents.Add(animal);
+
+        if (parents.Count > 0)
+        {
+            for (int index = 0; index < parents.Count; index++)
+            {
+                if (index < 2)
+                {
+                    animalScript.parents.Add(parents[index]);
+                }
+            }
+        }
+
         GameObject.Find("SimulationManager").GetComponent<WorldLogic>().AddAnimal(childObject);
     }
 

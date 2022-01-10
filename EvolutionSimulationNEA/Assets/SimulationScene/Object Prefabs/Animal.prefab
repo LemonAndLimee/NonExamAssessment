@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 1756405678200844504}
   m_Layer: 6
   m_Name: Animal
-  m_TagString: Untagged
+  m_TagString: Animal
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -133,6 +133,7 @@ MonoBehaviour:
   size: 0
   idealTemperature: 0
   energy: 100
+  isFirstGeneration: 0
 --- !u!50 &1756405678200844504
 Rigidbody2D:
   serializedVersion: 4
