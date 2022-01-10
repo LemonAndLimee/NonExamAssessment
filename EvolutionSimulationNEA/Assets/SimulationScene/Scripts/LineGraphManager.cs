@@ -6,8 +6,8 @@ public class LineGraphManager : MonoBehaviour
 {
     WorldLogic worldScript;
 
-    float graphHeight = 3f;
-    float graphWidth = 10f;
+    float graphHeight = 2.6f;
+    float graphWidth = 15f;
 
     GraphLogic speedLine;
     GraphLogic sizeLine;
@@ -88,5 +88,22 @@ public class LineGraphManager : MonoBehaviour
             }
 
         }
+    }
+
+    public void ToggleSpeedLine()
+    {
+        speedLine.ToggleVisibility();
+    }
+    public void ToggleSizeLine()
+    {
+        sizeLine.ToggleVisibility();
+    }
+    public void ToggleVisionRangeLine()
+    {
+        visionRangeLine.ToggleVisibility();
+    }
+    public void ToggleTemperatureLine()
+    {
+        idealTempLine.ToggleVisibility();
     }
 }

@@ -70,4 +70,16 @@ public class GraphLogic : MonoBehaviour
         numbers.Clear();
         lr.positionCount = 0;
     }
+
+    public void ToggleVisibility()
+    {
+        if (lr.enabled == true)
+        {
+            lr.enabled = false;
+        }
+        else
+        {
+            lr.enabled = true;
+        }
+    }
 }
