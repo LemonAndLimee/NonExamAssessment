@@ -60,7 +60,7 @@ public class GenerationLogic : MonoBehaviour
         for (int i = 0; i < numberOfFoodPerGeneration; i++)
         {
             GameObject foodObject = Instantiate(foodPrefab);
-            Vector3 position = new Vector3(Random.Range(xBoundary_negative, xBoundary_positive), Random.Range(yBoundary_negative, yBoundary_positive), 0f);
+            Vector3 position = new Vector3(Random.Range(xBoundary_negative, xBoundary_positive), Random.Range(yBoundary_negative, yBoundary_positive), foodObject.transform.position.z);
             foodObject.transform.position = position;
         }
     }

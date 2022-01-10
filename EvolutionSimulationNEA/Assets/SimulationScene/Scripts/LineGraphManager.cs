@@ -14,6 +14,8 @@ public class LineGraphManager : MonoBehaviour
     GraphLogic visionRangeLine;
     GraphLogic idealTempLine;
 
+    bool graphActive = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -63,5 +65,28 @@ public class LineGraphManager : MonoBehaviour
 
         idealTempLine.Reset();
         idealTempLine.SetStartingValue(worldScript.GetStartingIdealTemp());
+    }
+
+    public void ToggleVisibility()
+    {
+        if (graphActive == false)
+        {
+            graphActive = true;
+            LineRenderer[] renderers = gameObject.GetComponentsInChildren<LineRenderer>();
+            foreach (LineRenderer lr in renderers)
+            {
+                lr.enabled = true;
+            }
+        }
+        else
+        {
+            graphActive = false;
+            LineRenderer[] renderers = gameObject.GetComponentsInChildren<LineRenderer>();
+            foreach (LineRenderer lr in renderers)
+            {
+                lr.enabled = false;
+            }
+
+        }
     }
 }

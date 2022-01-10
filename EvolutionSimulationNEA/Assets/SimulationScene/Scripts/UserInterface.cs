@@ -19,6 +19,11 @@ public class UserInterface : MonoBehaviour
     public GameObject settingsPanel;
     private bool displaySettings = false;
 
+    public GameObject dataPanel;
+    bool displayData = false;
+
+    public LineGraphManager graphManagerScript;
+
     public Slider environmentTempSlider;
     public Slider numberOfAnimalsToSpawnSlider;
     public Slider numberOfGenerationsSlider;
@@ -32,6 +37,7 @@ public class UserInterface : MonoBehaviour
     public Slider sizeSlider;
     public Slider tempSlider;
 
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -236,6 +242,11 @@ public class UserInterface : MonoBehaviour
 
     public void ToggleSettings()
     {
+        if (displayData == true)
+        {
+            ToggleData();
+        }
+
         if (displaySettings == false)
         {
             displaySettings = true;
@@ -245,6 +256,27 @@ public class UserInterface : MonoBehaviour
         {
             displaySettings = false;
             settingsPanel.SetActive(false);
+        }
+    }
+
+    public void ToggleData()
+    {
+        graphManagerScript.ToggleVisibility();
+
+        if (displaySettings == true)
+        {
+            ToggleSettings();
+        }
+
+        if (displayData == false)
+        {
+            displayData = true;
+            dataPanel.SetActive(true);
+        }
+        else
+        {
+            displayData = false;
+            dataPanel.SetActive(false);
         }
     }
 }
