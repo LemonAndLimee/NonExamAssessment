@@ -65,6 +65,9 @@ public class AnimalLogic : MonoBehaviour
     private void Start()
     {
         generationTime = GameObject.Find("SimulationManager").GetComponent<GenerationLogic>().GetGenerationDuration();
+        gameObject.GetComponent<SpriteRenderer>().color = new Color(0.2352941f, 0.4352942f, 0.5490196f, 1f);
+        transform.GetChild(0).GetComponent<SpriteRenderer>().color = new Color(0.2352941f, 0.4352942f, 0.5490196f, 0.09803922f);
+
     }
     public void SetValues(int speedValue, float visionRangeValue, float sizeValue, int idealTemperatureValue, float energyValue)
     {
@@ -218,12 +221,14 @@ public class AnimalLogic : MonoBehaviour
     {
         if (isSelected)
         {
+            Debug.Log("unselect");
             isSelected = false;
             gameObject.GetComponent<SpriteRenderer>().color = new Color(0.2352941f, 0.4352942f, 0.5490196f, 1f);
             transform.GetChild(0).GetComponent<SpriteRenderer>().color = new Color(0.2352941f, 0.4352942f, 0.5490196f, 0.09803922f);
         }
         else
         {
+            Debug.Log("select");
             isSelected = true;
             gameObject.GetComponent<SpriteRenderer>().color = new Color(0.9433962f, 0.909963f, 0.3871485f, 1f);
             transform.GetChild(0).GetComponent<SpriteRenderer>().color = new Color(0.9433962f, 0.909963f, 0.3871485f, 0.09803922f);

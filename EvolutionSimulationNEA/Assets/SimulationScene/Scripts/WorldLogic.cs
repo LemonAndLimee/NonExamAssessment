@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -25,6 +26,10 @@ public class WorldLogic : MonoBehaviour
     public Text sizeText;
     public Text vrText;
     public Text tempText;
+    public Text captionText;
+
+    bool isDisplayingAverages = true;
+    GameObject currentSelection;
 
     float meanSpeed = 30f;
     float meanSize = 1f;
@@ -54,30 +59,60 @@ public class WorldLogic : MonoBehaviour
         }
     }
 
+    public void SetSelection(GameObject obj)
+    {
+        currentSelection = obj;
+        isDisplayingAverages = false;
+        captionText.text = "Individual:";
+    }
+    public void TurnOffSelection()
+    {
+        isDisplayingAverages = true;
+        captionText.text = "Average:";
+    }
+
     private void Update()
     {
-        populationText.text = "Population: " + animals.Count.ToString();
+        populationText.text = animals.Count.ToString();
 
-        meanSpeed = 0f;
-        meanSize = 0f;
-        meanVR = 0f;
-        meanTemp = 0f;
-        for (int i = 0; i < animals.Count; i++)
+        if (isDisplayingAverages)
         {
-            meanSpeed += animals[i].GetComponent<AnimalLogic>().GetSpeed();
-            meanSize += animals[i].GetComponent<AnimalLogic>().GetSize();
-            meanVR += animals[i].GetComponent<AnimalLogic>().GetVisionRange();
-            meanTemp += animals[i].GetComponent<AnimalLogic>().GetTemperature();
-        }
-        meanSpeed = meanSpeed / animals.Count;
-        meanSize = meanSize / animals.Count;
-        meanVR = meanVR / animals.Count;
-        meanTemp = meanTemp / animals.Count;
+            meanSpeed = 0f;
+            meanSize = 0f;
+            meanVR = 0f;
+            meanTemp = 0f;
+            for (int i = 0; i < animals.Count; i++)
+            {
+                meanSpeed += animals[i].GetComponent<AnimalLogic>().GetSpeed();
+                meanSize += animals[i].GetComponent<AnimalLogic>().GetSize();
+                meanVR += animals[i].GetComponent<AnimalLogic>().GetVisionRange();
+                meanTemp += animals[i].GetComponent<AnimalLogic>().GetTemperature();
+            }
+            meanSpeed = meanSpeed / animals.Count;
+            meanSize = meanSize / animals.Count;
+            meanVR = meanVR / animals.Count;
+            meanTemp = meanTemp / animals.Count;
 
-        speedText.text = "Speed: " + meanSpeed.ToString();
-        sizeText.text = "Size: " + meanSize.ToString();
-        vrText.text = "VR: " + meanVR.ToString();
-        tempText.text = "Temp: " + meanTemp.ToString();
+            speedText.text = "Speed: " + Math.Round(meanSpeed, 2).ToString();
+            sizeText.text = "Size: " + Math.Round(meanSize, 2).ToString();
+            vrText.text = "Sight Range: " + Math.Round(meanVR, 2).ToString();
+            tempText.text = "Ideal\nTemperature: " + Math.Round(meanTemp, 2).ToString();
+        }
+        else
+        {
+            if (currentSelection == null)
+            {
+                TurnOffSelection();
+            }
+            else
+            {
+                AnimalLogic animalScript = currentSelection.GetComponent<AnimalLogic>();
+                speedText.text = "Speed: " + animalScript.GetSpeed().ToString();
+                sizeText.text = "Size: " + Math.Round(animalScript.GetSize(), 2).ToString();
+                vrText.text = "Sight Range: " + Math.Round(animalScript.GetVisionRange(), 2).ToString();
+                tempText.text = "Ideal\nTemperature: " + animalScript.GetTemperature().ToString();
+            }
+        }
     }
 
     public void Reproduce()
@@ -85,7 +120,7 @@ public class WorldLogic : MonoBehaviour
         int population = animals.Count;
         for (int i = 0; i < population; i++)
         {
-            float randomNumber = Random.Range(0, 100) / 100f;
+            float randomNumber = UnityEngine.Random.Range(0, 100) / 100f;
             //Debug.Log(randomNumber);
             if (randomNumber < reproductionPercentage && animals[i] != null)
             {

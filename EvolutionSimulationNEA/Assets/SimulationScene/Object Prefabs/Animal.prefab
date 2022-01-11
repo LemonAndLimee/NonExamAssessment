@@ -134,6 +134,7 @@ MonoBehaviour:
   idealTemperature: 0
   energy: 100
   isFirstGeneration: 0
+  isSelected: 0
 --- !u!50 &1756405678200844504
 Rigidbody2D:
   serializedVersion: 4
@@ -169,7 +170,7 @@ GameObject:
   - component: {fileID: 2391170480566669427}
   m_Layer: 6
   m_Name: AnimalVisionRange
-  m_TagString: Untagged
+  m_TagString: AnimalVision
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

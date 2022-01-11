@@ -10,7 +10,7 @@ public class GenerationLogic : MonoBehaviour
     const float yMin = -2.97f;
     const float yMax = 4.55f;
 
-    private int numberOfFoodPerGeneration = 50; //temp variable
+    private int numberOfFoodPerGeneration = 100; //temp variable
     private int generationDuration = 5;
     private float timer = 0f;
     private int generationCounter = 0;

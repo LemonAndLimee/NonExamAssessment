@@ -53,7 +53,6 @@ public class GraphLogic : MonoBehaviour
     {
         numbers.Add(value);
         CheckDifference(value);
-        Debug.Log(value);
     }
 
     void CheckDifference(float value)
