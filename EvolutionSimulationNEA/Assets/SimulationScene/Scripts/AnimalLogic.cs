@@ -60,6 +60,8 @@ public class AnimalLogic : MonoBehaviour
 
     public bool isFirstGeneration;
 
+    public bool isSelected;
+
     private void Start()
     {
         generationTime = GameObject.Find("SimulationManager").GetComponent<GenerationLogic>().GetGenerationDuration();
@@ -212,5 +214,20 @@ public class AnimalLogic : MonoBehaviour
         return idealTemperature;
     }
 
+    public void ToggleSelectedMode()
+    {
+        if (isSelected)
+        {
+            isSelected = false;
+            gameObject.GetComponent<SpriteRenderer>().color = new Color(0.2352941f, 0.4352942f, 0.5490196f, 1f);
+            transform.GetChild(0).GetComponent<SpriteRenderer>().color = new Color(0.2352941f, 0.4352942f, 0.5490196f, 0.09803922f);
+        }
+        else
+        {
+            isSelected = true;
+            gameObject.GetComponent<SpriteRenderer>().color = new Color(0.9433962f, 0.909963f, 0.3871485f, 1f);
+            transform.GetChild(0).GetComponent<SpriteRenderer>().color = new Color(0.9433962f, 0.909963f, 0.3871485f, 0.09803922f);
+        }
+    }
 
 }

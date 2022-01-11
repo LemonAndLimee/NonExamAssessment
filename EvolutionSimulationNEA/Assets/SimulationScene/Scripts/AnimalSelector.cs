@@ -4,11 +4,17 @@ using UnityEngine;
 
 public class AnimalSelector : MonoBehaviour
 {
+    GameObject currentSelection;
 
     private void Update()
     {
         if (Input.GetMouseButtonDown(0))
         {
+            //if (currentSelection != null)
+            //{
+                //currentSelection.GetComponent<AnimalLogic>().ToggleSelectedMode();
+                //currentSelection = null;
+            //}
 
             Vector3 worldMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector2 mousePosition2D = new Vector2(worldMousePosition.x, worldMousePosition.y);
@@ -17,8 +23,8 @@ public class AnimalSelector : MonoBehaviour
 
             if (raycastHit.collider != null && raycastHit.collider.gameObject.tag == "Animal")
             {
-                AnimalLogic animalScript = raycastHit.collider.gameObject.GetComponent<AnimalLogic>();
-                Debug.Log(animalScript.parents[0].GetSpeed());
+                currentSelection = raycastHit.collider.gameObject;
+                currentSelection.GetComponent<AnimalLogic>().ToggleSelectedMode();
             }
             
         }
