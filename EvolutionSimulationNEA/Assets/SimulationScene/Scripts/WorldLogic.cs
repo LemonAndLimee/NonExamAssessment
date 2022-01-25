@@ -22,10 +22,17 @@ public class WorldLogic : MonoBehaviour
     private float standardDeviation = 5f;
 
     public Text populationText;
+
     public Text speedText;
     public Text sizeText;
     public Text vrText;
     public Text tempText;
+
+    Slider speedSlider;
+    Slider sizeSlider;
+    Slider VRslider;
+    Slider tempSlider;
+
     public Text captionText;
 
     bool isDisplayingAverages = true;
@@ -37,11 +44,22 @@ public class WorldLogic : MonoBehaviour
     float meanTemp = 10f;
 
     public LineGraphManager graphManagerScript;
+    public UserInterface UIscript;
+
+    Animal animalStatsToDisplay;
+    
 
     // Start is called before the first frame update
     void Start()
     {
         SpawnAnimals();
+        UIscript = gameObject.GetComponent<UserInterface>();
+
+        speedSlider = speedText.GetComponentInChildren<Slider>();
+        sizeSlider = sizeText.GetComponentInChildren<Slider>();
+        VRslider = vrText.GetComponentInChildren<Slider>();
+        tempSlider = tempText.GetComponentInChildren<Slider>();
+        
     }
 
     private void SpawnAnimals()
@@ -64,35 +82,47 @@ public class WorldLogic : MonoBehaviour
         currentSelection = obj;
         isDisplayingAverages = false;
         captionText.text = "Individual:";
+        UIscript.SetSelectionMode(true, currentSelection);
+        animalStatsToDisplay = currentSelection.GetComponent<AnimalLogic>().GetAnimalStats();
     }
     public void TurnOffSelection()
     {
         isDisplayingAverages = true;
         captionText.text = "Average:";
+        UIscript.SetSelectionMode(false, null);
     }
 
     private void Update()
     {
         populationText.text = animals.Count.ToString();
 
+
+        meanSpeed = 0f;
+        meanSize = 0f;
+        meanVR = 0f;
+        meanTemp = 0f;
+        for (int i = 0; i < animals.Count; i++)
+        {
+            int speed = animals[i].GetComponent<AnimalLogic>().GetSpeed();
+            float size = animals[i].GetComponent<AnimalLogic>().GetSize();
+            float visionRange = animals[i].GetComponent<AnimalLogic>().GetVisionRange();
+            int temperature = animals[i].GetComponent<AnimalLogic>().GetTemperature();
+
+            meanSpeed += speed;
+            meanSize += size;
+            meanVR += visionRange;
+            meanTemp += temperature;
+        }
+
+        meanSpeed = meanSpeed / animals.Count;
+        meanSize = meanSize / animals.Count;
+        meanVR = meanVR / animals.Count;
+        meanTemp = meanTemp / animals.Count;
+
+
+
         if (isDisplayingAverages)
         {
-            meanSpeed = 0f;
-            meanSize = 0f;
-            meanVR = 0f;
-            meanTemp = 0f;
-            for (int i = 0; i < animals.Count; i++)
-            {
-                meanSpeed += animals[i].GetComponent<AnimalLogic>().GetSpeed();
-                meanSize += animals[i].GetComponent<AnimalLogic>().GetSize();
-                meanVR += animals[i].GetComponent<AnimalLogic>().GetVisionRange();
-                meanTemp += animals[i].GetComponent<AnimalLogic>().GetTemperature();
-            }
-            meanSpeed = meanSpeed / animals.Count;
-            meanSize = meanSize / animals.Count;
-            meanVR = meanVR / animals.Count;
-            meanTemp = meanTemp / animals.Count;
-
             speedText.text = "Speed: " + Math.Round(meanSpeed, 2).ToString();
             sizeText.text = "Size: " + Math.Round(meanSize, 2).ToString();
             vrText.text = "Sight Range: " + Math.Round(meanVR, 2).ToString();
@@ -106,11 +136,57 @@ public class WorldLogic : MonoBehaviour
             }
             else
             {
-                AnimalLogic animalScript = currentSelection.GetComponent<AnimalLogic>();
-                speedText.text = "Speed: " + animalScript.GetSpeed().ToString();
-                sizeText.text = "Size: " + Math.Round(animalScript.GetSize(), 2).ToString();
-                vrText.text = "Sight Range: " + Math.Round(animalScript.GetVisionRange(), 2).ToString();
-                tempText.text = "Ideal\nTemperature: " + animalScript.GetTemperature().ToString();
+                float maxSpeedDifference = 0;
+                float maxSizeDifference = 0;
+                float maxVRdifference = 0;
+                float maxTempDifference = 0;
+
+                speedText.text = "Speed: " + animalStatsToDisplay.GetSpeed();
+                sizeText.text = "Size: " + Math.Round(animalStatsToDisplay.GetSize(), 2).ToString();
+                vrText.text = "Sight Range: " + Math.Round(animalStatsToDisplay.GetVisionRange(), 2).ToString();
+                tempText.text = "Ideal\nTemperature: " + animalStatsToDisplay.GetIdealTemp().ToString();
+
+                for (int i = 0; i < animals.Count; i++)
+                {
+                    int speed = animals[i].GetComponent<AnimalLogic>().GetSpeed();
+                    float size = animals[i].GetComponent<AnimalLogic>().GetSize();
+                    float visionRange = animals[i].GetComponent<AnimalLogic>().GetVisionRange();
+                    int temperature = animals[i].GetComponent<AnimalLogic>().GetTemperature();
+
+                    if (Math.Abs(speed - meanSpeed) > maxSpeedDifference)
+                    {
+                        maxSpeedDifference = Math.Abs(speed - meanSpeed);
+                    }
+                    if (Math.Abs(size - meanSize) > maxSizeDifference)
+                    {
+                        maxSizeDifference = Math.Abs(size - meanSize);
+                    }
+                    if (Math.Abs(visionRange - meanVR) > maxVRdifference)
+                    {
+                        maxVRdifference = Math.Abs(visionRange - meanVR);
+                    }
+                    if (Math.Abs(temperature - meanTemp) > maxTempDifference)
+                    {
+                        maxTempDifference = Math.Abs(temperature - meanTemp);
+                    }
+
+                }
+
+                float speedDisplayValue = (animalStatsToDisplay.GetSpeed()-meanSpeed) / maxSpeedDifference;
+                speedDisplayValue = 0.5f + 0.5f*(speedDisplayValue);
+                speedSlider.value = speedDisplayValue;
+
+                float sizeDisplayValue = (animalStatsToDisplay.GetSize() - meanSize) / maxSizeDifference;
+                sizeDisplayValue = 0.5f + 0.5f * sizeDisplayValue;
+                sizeSlider.value = sizeDisplayValue;
+
+                float VRdisplayValue = (animalStatsToDisplay.GetVisionRange() - meanVR) / maxVRdifference;
+                VRdisplayValue = 0.5f + 0.5f * VRdisplayValue;
+                VRslider.value = VRdisplayValue;
+
+                float tempDisplayValue = (animalStatsToDisplay.GetIdealTemp() - meanTemp) / maxTempDifference;
+                tempDisplayValue = 0.5f + 0.5f * tempDisplayValue;
+                tempSlider.value = tempDisplayValue;
             }
         }
     }
@@ -258,4 +334,11 @@ public class WorldLogic : MonoBehaviour
     {
         startingIdealTemp = number;
     }
+
+
+    public void SetDisplayStats(Animal stats)
+    {
+        animalStatsToDisplay = stats;
+    }
+
 }

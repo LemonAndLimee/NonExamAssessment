@@ -37,6 +37,14 @@ public class UserInterface : MonoBehaviour
     public Slider sizeSlider;
     public Slider tempSlider;
 
+    bool selectionModeOn = false;
+    GameObject currentSelection;
+
+    public GameObject rightDataPanel;
+    public GameObject[] parentButtons;
+    GameObject rightDataPanelSelection;
+    int rightDataPanelSelectionIndex = 0;
+
     
     // Start is called before the first frame update
     void Start()
@@ -49,38 +57,57 @@ public class UserInterface : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        UpdateTextValue(numberOfAnimalsToSpawnSlider, 1f);
-        worldScript.SetNumberOfAnimalsToSpawn((int)numberOfAnimalsToSpawnSlider.value);
+        if (displaySettings == true)
+        {
+            UpdateTextValue(numberOfAnimalsToSpawnSlider, 1f);
+            worldScript.SetNumberOfAnimalsToSpawn((int)numberOfAnimalsToSpawnSlider.value);
 
-        UpdateTextValue(environmentTempSlider, 1f);
-        worldScript.SetWorldTemperature((int)environmentTempSlider.value);
+            UpdateTextValue(environmentTempSlider, 1f);
+            worldScript.SetWorldTemperature((int)environmentTempSlider.value);
 
-        UpdateTextValue(numberOfGenerationsSlider, 1f);
-        generationScript.SetNumberOfGenerations((int)numberOfGenerationsSlider.value);
+            UpdateTextValue(numberOfGenerationsSlider, 1f);
+            generationScript.SetNumberOfGenerations((int)numberOfGenerationsSlider.value);
 
-        UpdateTextValue(generationDurationSlider, 1f);
-        generationScript.SetGenerationDuration((int)generationDurationSlider.value);
+            UpdateTextValue(generationDurationSlider, 1f);
+            generationScript.SetGenerationDuration((int)generationDurationSlider.value);
 
-        UpdateTextValue(foodPerGenerationSlider, 1f);
-        generationScript.SetFoodPerGeneration((int)foodPerGenerationSlider.value);
+            UpdateTextValue(foodPerGenerationSlider, 1f);
+            generationScript.SetFoodPerGeneration((int)foodPerGenerationSlider.value);
 
-        UpdateTextValue(reproductionChanceSlider, 0.01f);
-        worldScript.SetReproductionPercentage(reproductionChanceSlider.value*0.01f);
+            UpdateTextValue(reproductionChanceSlider, 0.01f);
+            worldScript.SetReproductionPercentage(reproductionChanceSlider.value * 0.01f);
 
-        UpdateTextValue(standardDeviationSlider, 1f);
-        worldScript.SetStandardDeviation(standardDeviationSlider.value);
+            UpdateTextValue(standardDeviationSlider, 1f);
+            worldScript.SetStandardDeviation(standardDeviationSlider.value);
 
-        UpdateTextValue(speedSlider, 1f);
-        worldScript.SetStartingSpeed((int)speedSlider.value);
+            UpdateTextValue(speedSlider, 1f);
+            worldScript.SetStartingSpeed((int)speedSlider.value);
 
-        UpdateTextValue(visionSlider, 0.1f);
-        worldScript.SetStartingVision(visionSlider.value * 0.1f);
+            UpdateTextValue(visionSlider, 0.1f);
+            worldScript.SetStartingVision(visionSlider.value * 0.1f);
 
-        UpdateTextValue(sizeSlider, 0.1f);
-        worldScript.SetStartingSize(sizeSlider.value * 0.1f);
+            UpdateTextValue(sizeSlider, 0.1f);
+            worldScript.SetStartingSize(sizeSlider.value * 0.1f);
 
-        UpdateTextValue(tempSlider, 1f);
-        worldScript.SetStartingIdealTemp((int)tempSlider.value);
+            UpdateTextValue(tempSlider, 1f);
+            worldScript.SetStartingIdealTemp((int)tempSlider.value);
+        }
+
+
+        if (selectionModeOn)
+        {
+            AnimalLogic selectedAnimalScript = currentSelection.GetComponent<AnimalLogic>();
+            if (selectedAnimalScript.parents.Count > 0)
+            {
+                for (int i = 0; i < selectedAnimalScript.parents.Count; i++)
+                {
+                    if (selectedAnimalScript.parents[i].GetObject() == null)
+                    {
+                        parentButtons[i+1].transform.Find("Cross").gameObject.SetActive(true);
+                    }
+                }
+            }
+        }
 
     }
 
@@ -278,5 +305,88 @@ public class UserInterface : MonoBehaviour
             displayData = false;
             dataPanel.SetActive(false);
         }
+    }
+
+    public void SetSelectionMode(bool mode, GameObject selection)
+    {
+        selectionModeOn = mode;
+        currentSelection = selection;
+
+        if (selectionModeOn)
+        {
+            ResetRightDataPanel();
+            rightDataPanel.SetActive(true);
+        }
+        else
+        {
+            
+            rightDataPanel.SetActive(false);
+        }
+    }
+    public void ResetRightDataPanel()
+    {
+        for (int index = 0; index < parentButtons.Length; index++)
+        {
+            parentButtons[index].transform.Find("Cross").gameObject.SetActive(false);
+            parentButtons[index].SetActive(false);
+        }
+        SelectRightDataPanelButton(0);
+
+        AnimalLogic animalScript = currentSelection.GetComponent<AnimalLogic>();
+        parentButtons[0].SetActive(true);
+        if (animalScript.parents.Count > 0)
+        {
+            for (int i = 0; i < animalScript.parents.Count; i++)
+            {
+                parentButtons[i + 1].SetActive(true);
+            }
+        }
+
+    }
+
+    void SelectRightDataPanelButton(int index)
+    {
+        rightDataPanelSelectionIndex = index;
+        if (index == 0)
+        {
+            rightDataPanelSelection = currentSelection;
+            worldScript.SetDisplayStats(currentSelection.GetComponent<AnimalLogic>().GetAnimalStats());
+        }
+        else
+        {
+            rightDataPanelSelection = currentSelection.GetComponent<AnimalLogic>().parents[index-1].GetObject();
+            worldScript.SetDisplayStats(currentSelection.GetComponent<AnimalLogic>().parents[index - 1]);
+        }
+
+        for (int buttonIndex = 0; buttonIndex < parentButtons.Length; buttonIndex++)
+        {
+            if (buttonIndex == index)
+            {
+                parentButtons[buttonIndex].transform.Find("SelectionGlow").gameObject.SetActive(true);
+            }
+            else
+            {
+                parentButtons[buttonIndex].transform.Find("SelectionGlow").gameObject.SetActive(false);
+            }
+        }
+
+        
+    }
+
+    public void SelectButton0()
+    {
+        SelectRightDataPanelButton(0);
+    }
+    public void SelectButton1()
+    {
+        SelectRightDataPanelButton(1);
+    }
+    public void SelectButton2()
+    {
+        SelectRightDataPanelButton(2);
+    }
+    public void SelectButton3()
+    {
+        SelectRightDataPanelButton(3);
     }
 }

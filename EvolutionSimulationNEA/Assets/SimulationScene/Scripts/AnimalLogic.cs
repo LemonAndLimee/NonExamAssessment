@@ -57,6 +57,7 @@ public class AnimalLogic : MonoBehaviour
     private int generationTime;
 
     public List<Animal> parents = new List<Animal>();
+    Animal localStats;
 
     public bool isFirstGeneration;
 
@@ -85,7 +86,7 @@ public class AnimalLogic : MonoBehaviour
 
         energy = energyValue;
 
-
+        localStats = new Animal(gameObject, speed, visionRange, size, idealTemperature);
     }
 
     public void Reproduce(float standardDeviation)
@@ -104,8 +105,7 @@ public class AnimalLogic : MonoBehaviour
         animalScript.SetValues(childSpeed, childVisionRange, childSize, childIdealTemp, energy);
         animalScript.isFirstGeneration = false;
 
-        Animal animal = new Animal(gameObject, speed, visionRange, size, idealTemperature);
-        animalScript.parents.Add(animal);
+        animalScript.parents.Add(localStats);
 
         if (parents.Count > 0)
         {
@@ -233,6 +233,11 @@ public class AnimalLogic : MonoBehaviour
             gameObject.GetComponent<SpriteRenderer>().color = new Color(0.9433962f, 0.909963f, 0.3871485f, 1f);
             transform.GetChild(0).GetComponent<SpriteRenderer>().color = new Color(0.9433962f, 0.909963f, 0.3871485f, 0.09803922f);
         }
+    }
+
+    public Animal GetAnimalStats()
+    {
+        return localStats;
     }
 
 }
