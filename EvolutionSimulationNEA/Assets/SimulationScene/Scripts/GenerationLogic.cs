@@ -3,95 +3,107 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+//this script manages the passing of generations, the timescale, and the spawning of food
 public class GenerationLogic : MonoBehaviour
 {
+    //sets the boundaries for spawning food on the environment
     const float xMin = -3.77f;
     const float xMax = 3.77f;
     const float yMin = -2.97f;
     const float yMax = 4.55f;
 
-    private int numberOfFoodPerGeneration = 100; //temp variable
-    private int generationDuration = 5;
-    private float timer = 0f;
-    private int generationCounter = 0;
+    //stores number of food objects that will spawn each generation
+    private int numberOfFoodPerGeneration = 100; 
+    private int generationDuration = 5; //length of generation in seconds
+    private float timer = 0f; //timer value
+    private int generationCounter = 0; //generation counter 
 
-    private int numberOfGenerations = 50;
+    private int numberOfGenerations = 50; //number of generations to be carried out
 
-    public Text generationCounterText;
+    public Text generationCounterText; //the text component that displays the generation counter value
 
-    public GameObject foodPrefab;
+    public GameObject foodPrefab; //stores food prefab
 
-    public LineGraphManager graphManagerScript;
+    public LineGraphManager graphManagerScript; //stores graph manager script
 
-    // Start is called before the first frame update
+    //called at the start
     void Start()
     {
-        generationCounterText.text = "-";
+        generationCounterText.text = "-"; //sets generation counter to a non-number value
     }
 
-    // Update is called once per frame
+    //called every frame
     void Update()
     {
-        if (generationCounter <= numberOfGenerations)
+        if (generationCounter <= numberOfGenerations) //if generation counter has not reached number of generations to be carried out
         {
-            timer += Time.deltaTime;
-            if (timer >= generationDuration)
+            timer += Time.deltaTime; //increases timer in real time
+            if (timer >= generationDuration) //if timer surpasses generation length
             {
-                SpawnFood(xMin, xMax, yMin, yMax);
+                SpawnFood(xMin, xMax, yMin, yMax); //spawns food objects
 
-                gameObject.GetComponent<WorldLogic>().Reproduce();
+                gameObject.GetComponent<WorldLogic>().Reproduce(); //calls the Reproduce subroutine in the WorldLogic script
 
-                timer = 0f;
-                generationCounter++;
-                generationCounterText.text = generationCounter.ToString();
+                timer = 0f; //resets timer
+                generationCounter++; //increments generation counter by 1
+                generationCounterText.text = generationCounter.ToString(); //sets generation counter text to the number stored in generationCounter
 
+                //updates the graph values
                 graphManagerScript.UpdateValues();
             }
         }
-        else
+        else //if generation counter reaches number of generations to be carried out
         {
-            Time.timeScale = 0f;
-            generationCounterText.text = numberOfGenerations.ToString();
+            Time.timeScale = 0f; //freezes the time scale
+            generationCounterText.text = numberOfGenerations.ToString(); //updates the generation counter text
         }
     }
 
+    //spawns wave of food object
     void SpawnFood(float xBoundary_negative, float xBoundary_positive, float yBoundary_negative, float yBoundary_positive)
     {
-        for (int i = 0; i < numberOfFoodPerGeneration; i++)
+        for (int i = 0; i < numberOfFoodPerGeneration; i++) //repeats the number of times specified by numberOfFoodPerGeneration
         {
-            GameObject foodObject = Instantiate(foodPrefab);
+            GameObject foodObject = Instantiate(foodPrefab); //creates a food object as a clone of the food prefab
+            //creates a random vector3 position within the specified boundaries
             Vector3 position = new Vector3(Random.Range(xBoundary_negative, xBoundary_positive), Random.Range(yBoundary_negative, yBoundary_positive), foodObject.transform.position.z);
+            //sets the food object position to the position created
             foodObject.transform.position = position;
         }
     }
 
+    //returns generation length
     public int GetGenerationDuration()
     {
         return generationDuration;
     }
 
+    //resets the simulation
     public void Reset()
     {
-        timer = 0f;
-        generationCounter = 0;
+        timer = 0f; //resets timer
+        generationCounter = 0; //resets generation counter
 
-        GameObject[] foodObjects = GameObject.FindGameObjectsWithTag("Food");
-        for (int i = foodObjects.Length - 1; i >= 0; i--)
+        GameObject[] foodObjects = GameObject.FindGameObjectsWithTag("Food"); //creates list of all food objects
+        for (int i = foodObjects.Length - 1; i >= 0; i--) //for every food object, destroy said object
         {
             Destroy(foodObjects[i]);
         }
 
-        generationCounterText.text = "-";
+        generationCounterText.text = "-"; //sets generation counter text to non-number value
     }
 
+    //used to set the numberOfGenerations value
     public void SetNumberOfGenerations(int number)
     {
         numberOfGenerations = number;
     }
+    //used to set the generationDuration value
     public void SetGenerationDuration(int number)
     {
         generationDuration = number;
     }
+    //used to set the numberOfFoodPerGeneration value
     public void SetFoodPerGeneration(int number)
     {
         numberOfFoodPerGeneration = number;

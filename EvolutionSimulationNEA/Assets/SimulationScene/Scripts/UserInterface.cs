@@ -3,27 +3,29 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+//this script manages the user interface
 public class UserInterface : MonoBehaviour
 {
-    public Sprite playIcon;
-    public Sprite pauseIcon;
-    public Image playButton;
-    private bool isPlaying = false;
+    public Sprite playIcon; //play image
+    public Sprite pauseIcon; //pause image
+    public Image playButton; //image displayed by the play/pause button
+    private bool isPlaying = false; //true if the simulation is playing
 
-    private float timeScale = 1f;
-    private int timeScaleExponent = 0;
+    private float timeScale = 1f; //scale of time
+    private int timeScaleExponent = 0; //used to control the time scale increases and decreases
 
-    private WorldLogic worldScript;
-    private GenerationLogic generationScript;
+    private WorldLogic worldScript; //WorldLogic script
+    private GenerationLogic generationScript; //GenerationLogic script
 
-    public GameObject settingsPanel;
-    private bool displaySettings = false;
+    public GameObject settingsPanel; //settings panel game object
+    private bool displaySettings = false; //true if settings panel is being displayed
 
-    public GameObject dataPanel;
-    bool displayData = false;
+    public GameObject dataPanel; //data panel game object
+    bool displayData = false; //true if data panel is being displayed
 
-    public LineGraphManager graphManagerScript;
+    public LineGraphManager graphManagerScript; //graph manager script
 
+    //sliders in the settings panel used to change simulation values
     public Slider environmentTempSlider;
     public Slider numberOfAnimalsToSpawnSlider;
     public Slider numberOfGenerationsSlider;
@@ -37,28 +39,29 @@ public class UserInterface : MonoBehaviour
     public Slider sizeSlider;
     public Slider tempSlider;
 
-    bool selectionModeOn = false;
-    GameObject currentSelection;
+    bool selectionModeOn = false; //true if an animal is being selected
+    GameObject currentSelection; //refers to animal currently being selected
 
-    public GameObject rightDataPanel;
-    public GameObject[] parentButtons;
-    GameObject rightDataPanelSelection;
-    int rightDataPanelSelectionIndex = 0;
+    public GameObject rightDataPanel; //right data panel game object
+    public GameObject[] parentButtons; //array of buttons in the right data panel, used for representing the parents of selected animal
 
     
-    // Start is called before the first frame update
+    //called at the start
     void Start()
     {
-        Time.timeScale = 0f;
-        worldScript = gameObject.GetComponent<WorldLogic>();
-        generationScript = gameObject.GetComponent<GenerationLogic>();
+        Time.timeScale = 0f; //sets time scale to zero, pauses the simulation
+        worldScript = gameObject.GetComponent<WorldLogic>(); //assigns WorldLogic script
+        generationScript = gameObject.GetComponent<GenerationLogic>(); //assigns GenerationLogic script
     }
 
-    // Update is called once per frame
+    //called every frame
     void Update()
     {
-        if (displaySettings == true)
+        if (displaySettings == true) //if settings panel is being displayed
         {
+            //updates the text captions of each slider to reflect the slider value
+            //updates the variable value in WorldLogic to reflect the slider value
+
             UpdateTextValue(numberOfAnimalsToSpawnSlider, 1f);
             worldScript.SetNumberOfAnimalsToSpawn((int)numberOfAnimalsToSpawnSlider.value);
 
@@ -94,15 +97,18 @@ public class UserInterface : MonoBehaviour
         }
 
 
-        if (selectionModeOn)
+        if (selectionModeOn) //if an animal is being selected
         {
+            //sets selectedAnimalScript to the AnimalLogic script of the currently selected animal
             AnimalLogic selectedAnimalScript = currentSelection.GetComponent<AnimalLogic>();
-            if (selectedAnimalScript.parents.Count > 0)
+            if (selectedAnimalScript.parents.Count > 0) //if the selected animal has any parents
             {
-                for (int i = 0; i < selectedAnimalScript.parents.Count; i++)
+                for (int i = 0; i < selectedAnimalScript.parents.Count; i++) //loops through the parents
                 {
+                    //if the parent game object is equal to null, i.e. if the parent is "dead"
                     if (selectedAnimalScript.parents[i].GetObject() == null)
                     {
+                        //enables the red cross image on the parent button
                         parentButtons[i+1].transform.Find("Cross").gameObject.SetActive(true);
                     }
                 }
@@ -111,16 +117,23 @@ public class UserInterface : MonoBehaviour
 
     }
 
+    //updates text caption to reflect slider value
     private void UpdateTextValue(Slider slider, float multiplier)
     {
-        Text valueText = slider.transform.Find("Value").GetComponent<Text>();
-        valueText.text = (slider.value*multiplier).ToString();
+        Text valueText = slider.transform.Find("Value").GetComponent<Text>(); //sets valueText to the caption text of the slider
+        valueText.text = (slider.value*multiplier).ToString(); //sets valueText contents equal to the slider value * multiplier
     }
 
+    //edits the slider value by a set amount
     private void EditValue(Slider slider, float amount)
     {
         slider.value += amount;
     }
+
+
+
+    //subroutines used by the plus and minus buttons on either side of each slider
+    //the incremement subroutines add 1 to the slider value and the decrememnt subroutines subtract 1 from the slider value
 
     public void IncrementNumberOfAnimalsToSpawn()
     {
@@ -222,150 +235,167 @@ public class UserInterface : MonoBehaviour
         EditValue(tempSlider, -1f);
     }
 
+
+
+    //when play/pause button is pressed
     public void PlayPauseButton()
     {
-        if (isPlaying)
+        if (isPlaying) //if the simulation is playing, pause the simulation
         {
             Pause();
         }
-        else
+        else //if the simulation is paused, play the simulation
         {
             Play();
         }
     }
 
+    //plays simulation
     private void Play()
     {
         isPlaying = true;
-        playButton.sprite = pauseIcon;
-        Time.timeScale = timeScale;
+        playButton.sprite = pauseIcon; //changes play/pause button icon to the pause icon
+        Time.timeScale = timeScale; //restores time scale to its value before the simulation was paused
     }
-    //pause is public because upon reset, the WorldLogic needs to be able to put the game in a pause state regardless of current state
+    //pauses simulation
+    //Pause() is public because upon reset, the WorldLogic needs to be able to put the game in a pause state regardless of current state
     public void Pause()
     {
         isPlaying = false;
-        playButton.sprite = playIcon;
-        Time.timeScale = 0f;
+        playButton.sprite = playIcon; //changes play/pause button icon to the play icon
+        Time.timeScale = 0f; //sets time scale to 0: freezes time
     }
 
+    //increases time scale
     public void TimeScaleUp()
     {
+        //if simulation is playing AND timeScaleExponent is less than 3 (this prevents the time scale being endlessly increased
         if (timeScaleExponent < 3 && isPlaying)
         {
-            timeScaleExponent += 1;
+            timeScaleExponent += 1; //incremements timeScaleExponent by 1
+            //sets timeScale to 2^timeScaleExponent (each time this subroutine is called it doubles the time scale)
             timeScale = Mathf.Pow(2, timeScaleExponent);
-            Time.timeScale = timeScale;
+            Time.timeScale = timeScale; //sets simulation time scale to the variable timeScale
         }
     }
+    //decreases time scale
     public void TimeScaleDown()
     {
+        //if simulation is playing and timeScaleExponent is greater than -2
         if (timeScaleExponent > -2 && isPlaying)
         {
-            timeScaleExponent -= 1;
+            timeScaleExponent -= 1; //decrements timeScaleExponent by 1
+            //sets timeScale to 2^timeScaleExponent (each time this subroutine is called it halves the time scale)
             timeScale = Mathf.Pow(2, timeScaleExponent);
-            Time.timeScale = timeScale;
+            Time.timeScale = timeScale; //sets simulation time scale to the variable timeScale
         }
     }
 
+    //toggles settings panel
     public void ToggleSettings()
     {
-        if (displayData == true)
+        if (displayData == true) //if currently displaying the data panel
         {
-            ToggleData();
+            ToggleData(); //disables data panel
         }
 
-        if (displaySettings == false)
+        if (displaySettings == false) //if settings panel is disabled, enable settings panel
         {
             displaySettings = true;
             settingsPanel.SetActive(true);
         }
-        else
+        else //if settings panel is enabled, disable settings panel
         {
             displaySettings = false;
             settingsPanel.SetActive(false);
         }
     }
 
+    //toggles data panel
     public void ToggleData()
     {
-        graphManagerScript.ToggleVisibility();
+        graphManagerScript.ToggleVisibility(); //toggles visibility of the graph
 
-        if (displaySettings == true)
+        if (displaySettings == true) //if settings panel is currently displaying
         {
-            ToggleSettings();
+            ToggleSettings(); //disables settings panel
         }
 
-        if (displayData == false)
+        if (displayData == false) //if data panel is disabled, enable data panel
         {
             displayData = true;
             dataPanel.SetActive(true);
         }
-        else
+        else //if data panel is enabled, disable data panel
         {
             displayData = false;
             dataPanel.SetActive(false);
         }
     }
 
+    //used to turn selection mode on and off
     public void SetSelectionMode(bool mode, GameObject selection)
     {
-        selectionModeOn = mode;
-        currentSelection = selection;
+        selectionModeOn = mode; //sets SelectionModeOn to mode
+        currentSelection = selection; //sets currentSelection to selection object passed into the subroutine
 
-        if (selectionModeOn)
+        if (selectionModeOn) //if selectionMode is true
         {
-            ResetRightDataPanel();
-            rightDataPanel.SetActive(true);
+            ResetRightDataPanel(); //reset the right data panel
+            rightDataPanel.SetActive(true); //enables right data panel game object
         }
-        else
+        else //if selectionMode is false
         {
-            
-            rightDataPanel.SetActive(false);
+            rightDataPanel.SetActive(false); //disables right data panel game object
         }
     }
-    public void ResetRightDataPanel()
+    public void ResetRightDataPanel() //resets the right data panel contents
     {
-        for (int index = 0; index < parentButtons.Length; index++)
+        for (int index = 0; index < parentButtons.Length; index++) //loops through every parent button
         {
-            parentButtons[index].transform.Find("Cross").gameObject.SetActive(false);
-            parentButtons[index].SetActive(false);
+            parentButtons[index].transform.Find("Cross").gameObject.SetActive(false); //deactivate cross image for that button
+            parentButtons[index].SetActive(false); //deactivate button
         }
-        SelectRightDataPanelButton(0);
+        SelectRightDataPanelButton(0); //sets the bottom button to be the one currently selected
 
+        //assigns animalScript as the AnimalLogic script of the currently selected animal
         AnimalLogic animalScript = currentSelection.GetComponent<AnimalLogic>();
-        parentButtons[0].SetActive(true);
-        if (animalScript.parents.Count > 0)
+        parentButtons[0].SetActive(true); //enables bottom button
+        if (animalScript.parents.Count > 0) //if the animal has parents
         {
-            for (int i = 0; i < animalScript.parents.Count; i++)
+            for (int i = 0; i < animalScript.parents.Count; i++) //loops through each parent
             {
+                //activates the button corresponding to that parent
+                //takes into account that the button at index 0 refers to the animal itself, so parent 0 corresponds to button 1, etc.
                 parentButtons[i + 1].SetActive(true);
             }
         }
 
     }
 
-    void SelectRightDataPanelButton(int index)
+    void SelectRightDataPanelButton(int index) //used to select one of the parent buttons
     {
-        rightDataPanelSelectionIndex = index;
-        if (index == 0)
+        if (index == 0) //if bottom button pressed
         {
-            rightDataPanelSelection = currentSelection;
+            //displays currently selected animal's stats in the left data panel
             worldScript.SetDisplayStats(currentSelection.GetComponent<AnimalLogic>().GetAnimalStats());
         }
-        else
+        else //if any other button pressed
         {
-            rightDataPanelSelection = currentSelection.GetComponent<AnimalLogic>().parents[index-1].GetObject();
+            //sets left data panel to display the corresponding parent animal's stats
             worldScript.SetDisplayStats(currentSelection.GetComponent<AnimalLogic>().parents[index - 1]);
         }
 
-        for (int buttonIndex = 0; buttonIndex < parentButtons.Length; buttonIndex++)
+        for (int buttonIndex = 0; buttonIndex < parentButtons.Length; buttonIndex++) //loops through each parent button
         {
-            if (buttonIndex == index)
+            if (buttonIndex == index) //if the button is the button that was pressed
             {
+                //enables the selection glow image of that button
                 parentButtons[buttonIndex].transform.Find("SelectionGlow").gameObject.SetActive(true);
             }
-            else
+            else //if the button is not the one pressed
             {
+                //disables the selection glow image of that button
                 parentButtons[buttonIndex].transform.Find("SelectionGlow").gameObject.SetActive(false);
             }
         }
@@ -373,6 +403,7 @@ public class UserInterface : MonoBehaviour
         
     }
 
+    //subroutines used for pressing each button
     public void SelectButton0()
     {
         SelectRightDataPanelButton(0);
