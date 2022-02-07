@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 //this script manages the overall graph with all 4 lines
 public class LineGraphManager : MonoBehaviour
@@ -14,6 +15,12 @@ public class LineGraphManager : MonoBehaviour
     GraphLogic sizeLine; //refers to the line plotting size
     GraphLogic visionRangeLine; //refers to the line plotting vision range
     GraphLogic idealTempLine; //refers to the line plotting ideal temperature
+
+    //checkboxes used to toggle visibility of each line
+    public Toggle speedCheckbox;
+    public Toggle sizeCheckbox;
+    public Toggle VRcheckbox;
+    public Toggle tempCheckbox;
 
     bool graphActive = false; //sets default graph state to disabled
 
@@ -88,6 +95,23 @@ public class LineGraphManager : MonoBehaviour
             foreach (LineRenderer lr in renderers)
             {
                 lr.enabled = true;
+            }
+
+            if (speedCheckbox.isOn == false)
+            {
+                ToggleSpeedLine();
+            }
+            if (sizeCheckbox.isOn == false)
+            {
+                ToggleSizeLine();
+            }
+            if (VRcheckbox.isOn == false)
+            {
+                ToggleVisionRangeLine();
+            }
+            if (tempCheckbox.isOn == false)
+            {
+                ToggleTemperatureLine();
             }
         }
         else //if graph is enabled
