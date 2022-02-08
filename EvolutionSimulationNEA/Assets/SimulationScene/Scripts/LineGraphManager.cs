@@ -97,6 +97,7 @@ public class LineGraphManager : MonoBehaviour
                 lr.enabled = true;
             }
 
+            //if the checkbox corresponding to the line is off, turn off the line
             if (speedCheckbox.isOn == false)
             {
                 ToggleSpeedLine();
@@ -123,7 +124,6 @@ public class LineGraphManager : MonoBehaviour
             {
                 lr.enabled = false;
             }
-
         }
     }
 

@@ -45,6 +45,13 @@ public class UserInterface : MonoBehaviour
     public GameObject rightDataPanel; //right data panel game object
     public GameObject[] parentButtons; //array of buttons in the right data panel, used for representing the parents of selected animal
 
+    public GameObject dataPanelInfoButton; //info button attached to data panel
+
+    //info panels for various UI elements
+    public GameObject leftDataPanelInfoPanel;
+    public GameObject rightDataPanelInfoPanel;
+    public GameObject settingsInfoPanel;
+    public GameObject dataPanelInfoPanel;
     
     //called at the start
     void Start()
@@ -325,11 +332,13 @@ public class UserInterface : MonoBehaviour
         {
             displayData = true;
             dataPanel.SetActive(true);
+            dataPanelInfoButton.SetActive(true);
         }
         else //if data panel is enabled, disable data panel
         {
             displayData = false;
             dataPanel.SetActive(false);
+            dataPanelInfoButton.SetActive(false);
         }
     }
 
@@ -419,5 +428,34 @@ public class UserInterface : MonoBehaviour
     public void SelectButton3()
     {
         SelectRightDataPanelButton(3);
+    }
+
+    void ToggleInfoPanel(GameObject panel) //toggles info panel
+    {
+        if (panel.activeSelf == true) //if panel is enabled
+        {
+            panel.SetActive(false); //disables panel
+        } 
+        else //if panel is disabled
+        {
+            panel.SetActive(true); //enables panel
+        }
+    }
+
+    public void LeftDataPanelInfoButton() //used to toggle left data panel info panel
+    {
+        ToggleInfoPanel(leftDataPanelInfoPanel);
+    }
+    public void RightDataPanelInfoButton() //used to toggle right data panel info panel
+    {
+        ToggleInfoPanel(rightDataPanelInfoPanel);
+    }
+    public void SettingsInfoButton() //used to toggle settings panel info panel
+    {
+        ToggleInfoPanel(settingsInfoPanel);
+    }
+    public void DataPanelInfoButton() //used to toggle data panel info panel
+    {
+        ToggleInfoPanel(dataPanelInfoPanel);
     }
 }

@@ -2767,7 +2767,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 192, y: 104.2899}
+  m_SizeDelta: {x: 192, y: 70.47}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &708912521
 MonoBehaviour:
@@ -7187,14 +7187,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 0.8
-  m_Text: 'Have fun using the program! Click on
-
-    the question mark buttons if
-    you
-
-    want explanations of how something
-
-    works.'
+  m_Text: Have fun using the program!
 --- !u!222 &1907010982
 CanvasRenderer:
   m_ObjectHideFlags: 0
